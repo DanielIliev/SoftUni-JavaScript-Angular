@@ -5,13 +5,13 @@ router.post('/login', async (req, res) => {
     const { username, password } = req.body;
 
     try {
-        const token = await authService.login(username, password);
+        // const token = await authService.login(username, password);
+        await authService.login(username, password);
 
-        res.cookie('auth', token);
-        res.send('Ok');
+        res.json({ message: 'Logged in!' });
         res.end();
     } catch (error) {
-        res.send(error.message);
+        res.status(400).json({ message: error.message });
         res.end();
     }
 });
@@ -22,21 +22,23 @@ router.post('/register', async (req, res) => {
     try {
         await authService.register(username, email, password, repass);
 
-        res.send('Ok');
+        res.json({ message: 'Registered!' });
         res.end();
     } catch (error) {
-        res.send(error);
+        res.status(400).json({ message: error.message });
         res.end();
     }
 });
 
 router.get('/logout', (req, res) => {
-    if (req.user) {
-        return res.redirect('/');
-    }
-    
-    res.clearCookie('auth');
-    res.redirect('/')
+    res.json({ message: 'Logged out' });
+    res.end();
+    // if (req.user) {
+    //     return res.redirect('/');
+    // }
+
+    // res.clearCookie('auth');
+    // res.redirect('/')
 });
 
 module.exports = router;

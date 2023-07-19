@@ -7,6 +7,7 @@ const cookieParser = require('cookie-parser');
 const { authentication } = require('./middlewares/authenticationMiddleware.js');
 const { DB_NAME } = require('./constants.js');
 
+// TODO: Change DB name based on exam name
 mongoose.set('strictQuery', false); // For older versions
 mongoose.connect(`mongodb://127.0.0.1:27017/${DB_NAME}`);
 
