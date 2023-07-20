@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
+import { LocalStorageService } from './services/local-storage.service';
+import { WINDOW } from './util/window.injectable';
 
 @Component({
   selector: 'app-root',
@@ -6,6 +8,19 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  // title = 'demo';
   loggedIn: boolean = false;
+
+  constructor(private localeStorageService: LocalStorageService, @Inject(WINDOW) private window: Window) {
+    const token = this.localeStorageService.get('authToken');
+
+    if (token) {
+      this.loggedIn = true;
+    }
+  }
+
+  logout() {
+    this.localeStorageService.remove('authToken');
+    this.window.location.reload();
+  }
+
 }

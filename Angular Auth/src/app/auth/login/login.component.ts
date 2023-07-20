@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LoginService } from './login.service';
 import { LoginCredentials } from 'src/app/types/AuthTypes';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
+import { WINDOW } from 'src/app/util/window.injectable';
 
 @Component({
   selector: 'app-login',
@@ -21,10 +22,9 @@ export class LoginComponent implements OnInit {
     ]],
   });
 
-  invalidForm: boolean | undefined;
-  errorMessage: string = '';
+  invalidFormMessage: string = '';
 
-  constructor(private fb: FormBuilder, private loginService: LoginService, private localStorageService: LocalStorageService) { }
+  constructor(private fb: FormBuilder, private loginService: LoginService, private localStorageService: LocalStorageService, @Inject(WINDOW) private window: Window) { }
 
   ngOnInit(): void {
     // this.loginForm.valueChanges.subscribe(console.log);
@@ -32,7 +32,7 @@ export class LoginComponent implements OnInit {
 
   login() {
     if (this.loginForm.invalid) {
-      this.errorMessage = 'The form you have submitted is invalid!';
+      this.invalidFormMessage = 'The form you have submitted is invalid!';
       return;
     }
 
@@ -42,10 +42,13 @@ export class LoginComponent implements OnInit {
       next: (response) => {
         const token = String(response);
         this.localStorageService.set('authToken', token);
-        this.errorMessage = '';
+        this.invalidFormMessage = '';
       },
       error: (err) => {
-        this.errorMessage = err.error.message;
+        this.invalidFormMessage = err.error.message;
+      },
+      complete: () => {
+        this.window.location.reload();
       }
     });
   }
