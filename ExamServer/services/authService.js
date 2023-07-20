@@ -38,34 +38,7 @@ exports.login = async (username, password) => {
     return token;
 }
 
-exports.register = async (username, email, password, repass) => {
-
-    // Validate if user already exists
-    // const existingUser = User.findOne({
-    //     $or: [
-    //         { username },
-    //         { email },
-    //     ]
-    // });
-
-    // if (existingUser.length != 0) {
-    //     throw new Error('User already exists');
-    // }
-
-    const existingUser = User.findOne({ 'username': username },
-        {
-            $or: [
-                { 'email': email },
-            ]
-        }
-    );
-
-    console.log(existingUser);
-
-    if (existingUser.length != 0) {
-        throw new Error('User already exists');
-    }
-
+exports.register = async (username, email, password) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     try {

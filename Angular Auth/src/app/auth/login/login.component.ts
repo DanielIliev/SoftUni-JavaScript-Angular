@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LoginService } from './login.service';
 import { LoginCredentials } from 'src/app/types/AuthTypes';
+import { LocalStorageService } from 'src/app/services/local-storage.service';
 
 @Component({
   selector: 'app-login',
@@ -23,7 +24,7 @@ export class LoginComponent implements OnInit {
   invalidForm: boolean | undefined;
   errorMessage: string = '';
 
-  constructor(private fb: FormBuilder, private loginService: LoginService) { }
+  constructor(private fb: FormBuilder, private loginService: LoginService, private localStorageService: LocalStorageService) { }
 
   ngOnInit(): void {
     // this.loginForm.valueChanges.subscribe(console.log);
@@ -39,7 +40,8 @@ export class LoginComponent implements OnInit {
 
     this.loginService.login(credentials).subscribe({
       next: (response) => {
-        console.log(response);
+        const token = String(response);
+        this.localStorageService.set('authToken', token);
         this.errorMessage = '';
       },
       error: (err) => {

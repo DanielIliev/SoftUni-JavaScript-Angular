@@ -1,14 +1,16 @@
 const router = require('express').Router();
+const { validationResult } = require('express-validator');
+const { registerValidators } = require('../middlewares/inputValidators.js');
 const authService = require('../services/authService.js');
 
 router.post('/login', async (req, res) => {
     const { username, password } = req.body;
 
     try {
-        // const token = await authService.login(username, password);
+        const token = await authService.login(username, password);
         await authService.login(username, password);
 
-        res.json({ message: 'Logged in!' });
+        res.json(token);
         res.end();
     } catch (error) {
         res.status(400).json({ message: error.message });
@@ -16,16 +18,26 @@ router.post('/login', async (req, res) => {
     }
 });
 
-router.post('/register', async (req, res) => {
-    const { username, email, password, repass } = req.body;
+router.post('/register', registerValidators, async (req, res) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    if (req.body.password !== req.body.repass) {
+        return res.status(400).json('Passwords must match');
+    }
 
     try {
-        await authService.register(username, email, password, repass);
+        const { username, email, password} = req.body;
+
+        await authService.register(username, email, password);
 
         res.json({ message: 'Registered!' });
         res.end();
     } catch (error) {
-        res.status(400).json({ message: error.message });
+        res.status(400).json('Unable to register account, please try again later');
         res.end();
     }
 });

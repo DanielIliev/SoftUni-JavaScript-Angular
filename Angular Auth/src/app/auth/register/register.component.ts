@@ -13,7 +13,8 @@ export class RegisterComponent {
   registerForm: FormGroup = this.fb.group({
     username: ['', [
       Validators.required,
-      Validators.minLength(4),
+      Validators.minLength(3),
+      Validators.maxLength(25)
     ]],
     password: ['', [
       Validators.required,
@@ -21,7 +22,6 @@ export class RegisterComponent {
     ]],
     email: ['', [
       Validators.required,
-      Validators.minLength(10),
       Validators.pattern(/^[A-Za-z0-9]+@[A-Za-z0-9]+.[A-Za-z0-9]+$/)
     ]],
     repass: ['', [
@@ -31,23 +31,28 @@ export class RegisterComponent {
 
   constructor(private fb: FormBuilder, private registerService: RegisterService) { }
 
-  invalidForm: boolean | undefined;
-  errorMessage: string = '';
+  invalidFormMessage: string = '';
 
   register() {
     if (this.registerForm.invalid) {
-      this.errorMessage = 'The form you have submitted is invalid';
+      this.invalidFormMessage = 'The form you have submitted is invalid';
       return;
     }
 
     const credentials: RegisterCredentials = this.registerForm.value;
 
     this.registerService.register(credentials).subscribe({
-      next: (response) => {
-        console.log(response);
-      },
       error: (err) => {
-        this.errorMessage = err;
+        if (err.error.errors) {
+          this.invalidFormMessage = err.error.errors[0].msg;
+          return;
+        }
+
+        this.invalidFormMessage = err.error;
+      },
+      complete: () => {
+        this.invalidFormMessage = '';
+        this.registerForm.reset();
       }
     });
   }

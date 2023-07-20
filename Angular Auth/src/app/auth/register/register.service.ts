@@ -12,18 +12,13 @@ export class RegisterService {
   constructor(private http: HttpClient) { }
 
   register(credentials: RegisterCredentials) {
-    if (credentials.username === '' || credentials.email === '' || credentials.password === '' || credentials.repass === '') {
-      return throwError(() => {
-        return 'All fields are required!';
-      });
-    }
+    // if (credentials.username === '' || credentials.email === '' || credentials.password === '' || credentials.repass === '') {
+    //   return throwError(() => new Error('All fields are required!'));
+    // }
 
-    if (credentials.password !== credentials.repass) {
-      return throwError(() => {
-        return 'Passwords must match!';
-      });
-      
-    }
+    // if (credentials.password !== credentials.repass) {
+    //   return throwError(() => new Error('Passwords must match!'));
+    // }
 
     const headers = { 'Content-Type': 'application/json' };
 

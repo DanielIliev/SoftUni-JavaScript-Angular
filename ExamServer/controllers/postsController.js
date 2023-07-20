@@ -1,6 +1,6 @@
 // const Post = require('../models/Post');
 const { validationResult } = require('express-validator');
-const validators = require('../middlewares/inputValidators');
+const { addPostValidators } = require('../middlewares/inputValidators');
 const { fetchPosts, addPost, fetchPostById } = require('../services/postService');
 const router = require('express').Router();
 
@@ -16,7 +16,7 @@ router.get('/posts', async (req, res) => {
     }
 });
 
-router.post('/posts/add', validators.addPostValidator, async (req, res) => {
+router.post('/posts/add', addPostValidators, async (req, res) => {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
