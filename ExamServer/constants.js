@@ -1,2 +1,2 @@
 exports.SECRET = 'somerandomsecret';
-exports.DB_NAME = 'angular-database';
+exports.DB_NAME = 'DBNAME';

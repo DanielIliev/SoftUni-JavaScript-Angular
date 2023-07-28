@@ -4,7 +4,6 @@ const app = express();
 const cors = require('cors');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
-const { authentication } = require('./middlewares/authenticationMiddleware.js');
 const { DB_NAME } = require('./constants.js');
 
 // TODO: Change DB name based on exam name
@@ -16,7 +15,6 @@ app.use(express.json());
 app.use('/static', express.static('public'));
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(authentication);
 app.use(router);
 
 app.listen(3000, () => {
